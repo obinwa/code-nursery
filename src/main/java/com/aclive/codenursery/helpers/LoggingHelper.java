@@ -29,12 +29,12 @@ public class LoggingHelper {
     }
 
     public void logRequestObject(
-        Logger logger, RequestType requestType, String customerId,  Object apiRequest
+        Logger logger, RequestType requestType, String userId,  Object apiRequest
     ) {
         requestObject(
                 logger,
                 RequestLogItem.builder()
-                        .customerId(customerId)
+                        .userId(userId)
                         .requestBody(apiRequest)
                         .operation(requestType)
                         .build()

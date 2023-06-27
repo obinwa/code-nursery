@@ -3,11 +3,15 @@ package com.aclive.codenursery.service;
 import com.aclive.codenursery.entities.CodeProject;
 import com.aclive.codenursery.entities.CodeSnippet;
 import com.aclive.codenursery.entities.User;
+import com.aclive.codenursery.exceptions.CodeException;
+import com.aclive.codenursery.models.AggregateDto;
 import com.aclive.codenursery.models.request.CodeTextRequest;
+import com.aclive.codenursery.models.request.UpdateProjectRequest;
 import com.aclive.codenursery.models.response.CodeTextResponse;
 import com.aclive.codenursery.repository.CodeProjectRepository;
 import com.aclive.codenursery.repository.CodeSnippetRepository;
 import com.aclive.codenursery.repository.UserRepository;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.Code;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +36,27 @@ public class CodeNurseryService {
     @Autowired
     private CodeSnippetRepository snippetRepository;
 
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ProjectService projectService;
+    @Autowired
+    private CodeSnippetService codeSnippetService;
+
     private final String SUCCESS_CODE = "0000";
     private final String SUCCESS_MESSAGE = "Successful";
     private final String ERROR_CODE = "1000";
     private final String ERROR_MESSAGE = "Successful";
 
-    public Mono<CodeTextResponse> saveCode(String customerId, CodeTextRequest codeTextRequest){
+    public Mono<CodeTextResponse> saveCode(String userId, CodeTextRequest codeTextRequest){
+
+//        CodeProject project = projectRepository.findByNameContaining(codeTextRequest.getProjectName())
+//            .collectList()
+//            .switchIfEmpty()
+//            .map( resultProject -> {
+//                throw new Exception("Project with name already exist");
+//            })
+
 
             List<CodeSnippet> snippets = buildCodeSnippetsFromRequest(codeTextRequest);
             return snippetRepository.saveAll(snippets)
@@ -47,10 +66,10 @@ public class CodeNurseryService {
                     return projectRepository.save(project);
                 })
                 .flatMap(project -> {
-                    return userRepository.findById(customerId)
+                    return userRepository.findById(userId)
                         .switchIfEmpty(
                             Mono.just(User.builder()
-                                .id(customerId)
+                                .id(userId)
                                 .build())
                         )
                         .flatMap(user -> {
@@ -113,5 +132,41 @@ public class CodeNurseryService {
         }
 
         return snippets;
+    }
+
+    public Mono<CodeTextResponse> saveCodeWithValidation(String userId, CodeTextRequest request){
+        AggregateDto dto = AggregateDto.builder()
+            .request(request)
+            .userId(userId)
+            .build();
+
+        return userService.getUserWithDto(dto)
+            .flatMap(projectService::getEmptyProjectWithDto)
+            .flatMap(codeSnippetService::createSnippets)
+            .flatMap(projectService::createProject)
+            .map(this::buildSuccessResponse)
+            .onErrorResume(error -> Mono.just(handleException(error)));
+
+    }
+
+    public Mono<CodeTextResponse> updateSnippet(String customerId, UpdateProjectRequest request){
+        return Mono.just(null);
+    }
+    
+
+    private CodeTextResponse  buildSuccessResponse(AggregateDto dto){
+        return  CodeTextResponse.builder()
+            .statusCode(SUCCESS_CODE)
+            .statusMessage(SUCCESS_MESSAGE)
+            .build();
+    }
+
+    private CodeTextResponse handleException(Throwable throwable){
+        if(throwable instanceof CodeException){
+            throw (CodeException)throwable;
+        }else{
+            throwable.printStackTrace();
+            throw new CodeException(throwable);
+        }
     }
 }

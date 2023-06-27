@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class RequestLogItem {
     private Object requestBody;
-    private String customerId;
+    private String userId;
     private RequestType operation;
     private String projectId;
 }

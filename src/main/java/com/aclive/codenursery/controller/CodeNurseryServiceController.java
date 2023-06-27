@@ -31,20 +31,20 @@ public class CodeNurseryServiceController {
         notes = "The code text will be saved to a user's project",
         response = CodeTextResponse.class
     )
-    @PostMapping(value = "/save/{customerId}/code/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/save/{userId}/code/", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<CodeTextResponse> saveCodeText(
-        @PathVariable String customerId,
+        @PathVariable String userId,
         @RequestBody CodeTextRequest codeTextRequest
     ) {
         RequestLogItem requestLogItem = RequestLogItem.builder()
-            .customerId(customerId)
+            .userId(userId)
             .operation(RequestType.SAVE_CODE)
             .requestBody(codeTextRequest)
             .build();
 
         loggingHelper.logRequestObject(log, requestLogItem);
 
-        return codeNurseryService.saveCode(customerId, codeTextRequest)
+        return codeNurseryService.saveCodeWithValidation(userId, codeTextRequest)
             .map(response -> {
                 loggingHelper.logResponseObject(log, RequestType.SAVE_CODE, response);
                 return response;
@@ -58,7 +58,7 @@ public class CodeNurseryServiceController {
         response = CodeTextResponse.class
     )
     @PatchMapping(value = "/update/{projectId}/snippet/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<CodeTextResponse> saveCodeText(
+    public Mono<CodeTextResponse> updateCodeText(
         @PathVariable String projectId,
         @RequestBody UpdateProjectRequest request
         ) {
@@ -70,7 +70,7 @@ public class CodeNurseryServiceController {
 
         loggingHelper.logRequestObject(log, requestLogItem);
 
-        return codeNurseryService.saveCode(projectId, request)
+        return codeNurseryService.updateSnippet(projectId, request)
             .map(response -> {
                 loggingHelper.logResponseObject(log, RequestType.UPDATE_CODE, response);
                 return response;

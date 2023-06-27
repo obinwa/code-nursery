@@ -22,4 +22,5 @@ public class CodeProject {
     private List<String> codeSnippetIds;
     private String language;
     private String name;
+
 }
