@@ -11,7 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class UpdateProjectRequest {
-    private List<CodeSnippetEditInfo> updatedSnippets;
+public class AggregatorRequest {
+    private List<String> snippets;
+    private String language;
     private String projectName;
+    private String userId;
+    private String snippetIndex;
+    private List<CodeSnippetEditInfo> updatedSnippets;
 }

@@ -44,7 +44,7 @@ public class CodeNurseryServiceController {
 
         loggingHelper.logRequestObject(log, requestLogItem);
 
-        return codeNurseryService.saveCodeWithValidation(userId, codeTextRequest)
+        return codeNurseryService.saveCodeWithValidation( codeTextRequest,userId)
             .map(response -> {
                 loggingHelper.logResponseObject(log, RequestType.SAVE_CODE, response);
                 return response;
@@ -53,16 +53,18 @@ public class CodeNurseryServiceController {
     }
 
     @ApiOperation(
-        value = "A call to edit a snippet within a code",
-        notes = "The updated code snippet will be saved to a user's project",
+        value = "A call to edit a snippet/ or list of snippets within a code",
+        notes = "The updated code snippet(s) will be saved to a user's project",
         response = CodeTextResponse.class
     )
-    @PatchMapping(value = "/update/{projectId}/snippet/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/update/{userId}/{projectId}/snippet/", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<CodeTextResponse> updateCodeText(
+        @PathVariable String userId,
         @PathVariable String projectId,
         @RequestBody UpdateProjectRequest request
         ) {
         RequestLogItem requestLogItem = RequestLogItem.builder()
+            .userId(userId)
             .projectId(projectId)
             .operation(RequestType.UPDATE_CODE)
             .requestBody(request)
@@ -70,7 +72,7 @@ public class CodeNurseryServiceController {
 
         loggingHelper.logRequestObject(log, requestLogItem);
 
-        return codeNurseryService.updateSnippet(projectId, request)
+        return codeNurseryService.updateEditedSnippets( request,userId, projectId)
             .map(response -> {
                 loggingHelper.logResponseObject(log, RequestType.UPDATE_CODE, response);
                 return response;

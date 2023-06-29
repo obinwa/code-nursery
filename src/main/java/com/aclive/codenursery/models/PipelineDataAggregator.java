@@ -3,6 +3,7 @@ package com.aclive.codenursery.models;
 import com.aclive.codenursery.entities.CodeProject;
 import com.aclive.codenursery.entities.CodeSnippet;
 import com.aclive.codenursery.entities.User;
+import com.aclive.codenursery.models.request.AggregatorRequest;
 import com.aclive.codenursery.models.request.CodeTextRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,20 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class AggregateDto {
+public class PipelineDataAggregator {
     private User user;
     private CodeProject project;
     private CodeSnippet snippet;
     private List<String> snippetIds;
 
-    private CodeTextRequest request;
-    private String userId;
-
-
-//    class codeRequest{
-//        User user;
-//        CodeProject project;
-//        Cod
-//    }
+    private AggregatorRequest request;
 
 }

@@ -18,8 +18,6 @@ import java.util.List;
 public class CodeProject {
     @Id
     private String id;
-
-    private List<String> codeSnippetIds;
     private String language;
     private String name;
 

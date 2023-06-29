@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.math.BigDecimal;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -17,5 +19,6 @@ public class CodeSnippet {
     @Id
     private String id;
     private String code;
-    private int index;
+    private BigDecimal index;
+    private String projectId;
 }
