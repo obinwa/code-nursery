@@ -5,17 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class AggregatorRequest {
-    private List<String> snippets;
+public class CompilerBackendRequest {
+    private String code ;
     private String language;
-    private String projectName;
-    private String userId;
-    private String snippetIndex;
-    private List<CodeSnippetInfo> updatedSnippets;
 }

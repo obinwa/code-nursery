@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum RequestType {
 
     SAVE_CODE("Save Initial Code"),
-    UPDATE_CODE("Save Initial Code");
+    UPDATE_CODE("Update Code"),
+    RUN_CODE("Run Code");
 
 
     RequestType(String value) {

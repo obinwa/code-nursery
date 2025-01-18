@@ -79,4 +79,31 @@ public class CodeNurseryServiceController {
             });
 
     }
+
+
+    @ApiOperation(
+        value = "A call to run a code",
+        notes = "The code will be run against a compiler and result returned",
+        response = CodeTextResponse.class
+    )
+    @PostMapping(value = "/run/{userId}/code/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<CodeTextResponse> runCodeText(
+        @PathVariable String userId,
+        @RequestBody UpdateProjectRequest runCodeRequest
+    ) {
+        RequestLogItem requestLogItem = RequestLogItem.builder()
+            .userId(userId)
+            .operation(RequestType.RUN_CODE)
+            .requestBody(runCodeRequest)
+            .build();
+
+        loggingHelper.logRequestObject(log, requestLogItem);
+
+        return codeNurseryService.runCode(runCodeRequest,userId)
+            .map(response -> {
+                loggingHelper.logResponseObject(log, RequestType.RUN_CODE, response);
+                return response;
+            });
+
+    }
 }

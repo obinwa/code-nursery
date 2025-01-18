@@ -5,13 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class UpdateProjectRequest {
-    private List<CodeSnippetInfo> updatedSnippets;
-    private String projectName;
+public class CodeSnippetInfo {
+    private String id;
+    private String code;
+    private BigDecimal index;
+    private boolean isNew;
 }

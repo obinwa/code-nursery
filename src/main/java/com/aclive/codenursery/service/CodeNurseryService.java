@@ -1,12 +1,11 @@
 package com.aclive.codenursery.service;
 
-import com.aclive.codenursery.entities.CodeProject;
-import com.aclive.codenursery.entities.CodeSnippet;
-import com.aclive.codenursery.entities.User;
 import com.aclive.codenursery.exceptions.CodeException;
-import com.aclive.codenursery.helpers.RequestToAggregatorDtoMapper;
+import com.aclive.codenursery.helpers.RequestMapper;
 import com.aclive.codenursery.models.PipelineDataAggregator;
 import com.aclive.codenursery.models.request.CodeTextRequest;
+import com.aclive.codenursery.models.request.CompilerBackendRequest;
+import com.aclive.codenursery.models.request.RunCodeRequest;
 import com.aclive.codenursery.models.request.UpdateProjectRequest;
 import com.aclive.codenursery.models.response.CodeTextResponse;
 import com.aclive.codenursery.repository.CodeProjectRepository;
@@ -16,13 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-
-import java.math.BigDecimal;
-import java.util.UUID;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,7 +35,7 @@ public class CodeNurseryService {
     private CodeSnippetService codeSnippetService;
 
     @Autowired
-    private RequestToAggregatorDtoMapper mapper;
+    private RequestMapper mapper;
 
     private final String SUCCESS_CODE = "0000";
     private final String SUCCESS_MESSAGE = "Successful";
@@ -71,6 +63,28 @@ public class CodeNurseryService {
         return userService.getUserNonEmptyUser(dto)
             .flatMap(projectService::getNonEmptyProject)
             .flatMap(codeSnippetService::updateSnippets)
+            .map(this::buildSuccessResponse)
+            .onErrorResume(error -> Mono.just(handleException(error)));
+
+    }
+
+    public Mono<CodeTextResponse> runCode(RunCodeRequest request, String userId){
+        //validate request
+
+        //convert request to third party request
+            // sort snippets
+            // merge snippets
+            //
+        //get third party url
+        //call third party
+        //return response
+        //handle error
+        CompilerBackendRequest backendRequest = mapper.fromRunCodeRequest(request);
+
+        return userService.getUserNonEmptyUser(dto)
+            .flatMap(projectService::getEmptyProjectWithDto)
+            .flatMap(projectService::createProject)
+            .flatMap(codeSnippetService::createSnippets)
             .map(this::buildSuccessResponse)
             .onErrorResume(error -> Mono.just(handleException(error)));
 

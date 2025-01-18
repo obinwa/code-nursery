@@ -5,15 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class CodeSnippetEditInfo {
-    private String id;
-    private String code;
-    private BigDecimal index;
-    private boolean isNew;
+public class RunCodeRequest {
+    private List<CodeSnippetInfo> snippets;
+    private String projectName;
+    private String language;
 }

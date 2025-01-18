@@ -3,11 +3,9 @@ package com.aclive.codenursery.service;
 import com.aclive.codenursery.entities.CodeSnippet;
 import com.aclive.codenursery.models.PipelineDataAggregator;
 import com.aclive.codenursery.models.request.AggregatorRequest;
-import com.aclive.codenursery.models.request.CodeSnippetEditInfo;
-import com.aclive.codenursery.models.request.CodeTextRequest;
+import com.aclive.codenursery.models.request.CodeSnippetInfo;
 import com.aclive.codenursery.repository.CodeSnippetRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -64,7 +62,7 @@ public class CodeSnippetService {
 
     }
 
-    private CodeSnippet buildSnippet(CodeSnippetEditInfo editedSnippet){
+    private CodeSnippet buildSnippet(CodeSnippetInfo editedSnippet){
        return CodeSnippet.builder()
             .code(editedSnippet.getCode())
             .index(editedSnippet.getIndex())
@@ -72,7 +70,7 @@ public class CodeSnippetService {
             .build();
     }
 
-    private Mono<CodeSnippet> editSnippet(CodeSnippetEditInfo editedSnippet){
+    private Mono<CodeSnippet> editSnippet(CodeSnippetInfo editedSnippet){
         return snippetRepository.findByIndex(editedSnippet.getIndex())
             .switchIfEmpty(Mono.just(CodeSnippet.builder()
                 .code(editedSnippet.getCode())
